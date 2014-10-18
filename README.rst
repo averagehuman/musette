@@ -177,33 +177,33 @@ Supported Types
 + dict (BAR=key=val;foo=bar)
 + url
 + db_url
-    -  PostgreSQL: postgres://, pgsql://, psql:// or postgresql://
-    -  PostGIS: postgis://
-    -  MySQL: mysql:// or mysql2://
-    -  MySQL for GeoDjango: mysqlgis://
-    -  SQLITE: sqlite://
-    -  SQLITE with SPATIALITE for GeoDjango: spatialite://
-    -  LDAP: ldap://
+    -  PostgreSQL: ``postgres://``, ``pgsql://``, ``psql://`` or ``postgresql://``
+    -  PostGIS: ``postgis://``
+    -  MySQL: ``mysql://`` or ``mysql2://``
+    -  MySQL for GeoDjango: ``mysqlgis://``
+    -  SQLITE: ``sqlite://``
+    -  SQLITE with SPATIALITE for GeoDjango: ``spatialite://``
+    -  LDAP: ``ldap://``
 + cache_url
-    -  Database: dbcache://
-    -  Dummy: dummycache://
-    -  File: filecache://
-    -  Memory: locmemcache://
-    -  Memcached: memcache://
-    -  Python memory: pymemcache://
-    -  Redis: rediscache://
+    -  Database: ``dbcache://``
+    -  Dummy: ``dummycache://``
+    -  File: ``filecache://``
+    -  Memory: ``locmemcache://``
+    -  Memcached: ``memcache://``
+    -  Python memory: ``pymemcache://``
+    -  Redis: ``rediscache://``
 + search_url
-    -  ElasticSearch: elasticsearch://
-    -  Solr: solr://
-    -  Whoosh: whoosh://
-    -  Simple cache: simple://
+    -  ElasticSearch: ``elasticsearch://``
+    -  Solr: ``solr://``
+    -  Whoosh: ``whoosh://``
+    -  Simple cache: ``simple://``
 + email_url
-    -  SMTP: smtp://
-    -  SMTPS: smtps://
-    -  Console mail: consolemail://
-    -  File mail: filemail://
-    -  LocMem mail: memorymail://
-    -  Dummy mail: dummymail://
+    -  SMTP: ``smtp://``
+    -  SMTPS: ``smtps://``
+    -  Console mail: ``consolemail://``
+    -  File mail: ``filemail://``
+    -  LocMem mail: ``memorymail://``
+    -  Dummy mail: ``dummymail://``
 
 Tests
 -----
@@ -229,9 +229,6 @@ Credits
 - `dstufft`_ / `dj-search-url`_
 - `julianwachholz`_ / `dj-config-url`_
 - `nickstenning`_ / `honcho`_
-- `envparse`_
-- `Distribute`_
-- `modern-package-template`_
 
 .. _joke2k: http://about.me/danielef
 .. _django-environ: https://pypi.python.org/pypi/django-environ
@@ -262,6 +259,4 @@ Credits
 .. _Two Scoops of Django: https://django.2scoops.org
 
 
-.. _Distribute: http://pypi.python.org/pypi/distribute
-.. _modern-package-template: http://pypi.python.org/pypi/modern-package-template
 
