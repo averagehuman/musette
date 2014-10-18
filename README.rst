@@ -4,9 +4,9 @@ musette
 ``musette`` enables application configuration by providing a proxy to
 ``os.environ`` which allows:
 
-* type-casting of environment values
-* updating the environment via plaintext key-value properties files
-* shell-style interpolation
++ type-casting of environment values
++ updating the environment via plaintext key-value properties files
++ shell-style interpolation
 
 ``musette`` is a direct fork of `django-environ`_ with significant changes.
 Although it is intended for Django settings configuration it does not actually
@@ -14,12 +14,12 @@ require Django itself.
 
 The original module (`django-environ`_) was a merge of:
 
-* `envparse`_
-* `honcho`_
-* `dj-database-url`_
-* `dj-search-url`_
-* `dj-config-url`_
-* `django-cache-url`_
++ `envparse`_
++ `honcho`_
++ `dj-database-url`_
++ `dj-search-url`_
++ `dj-config-url`_
++ `django-cache-url`_
 
 Basic usage
 -----------
@@ -102,8 +102,11 @@ Properties Files
 
 A properties or "env" file is plain text file containing one or more
 **key := value** or **key = value** lines, where values may optionally
-refer refer to other environment values via shell-style variables such
-as ``${foo}`` or ``$foo``.
+refer to other environment values via shell-style variables::
+
+    that := something
+    this := ${that}
+
 
 How to install
 --------------
@@ -165,15 +168,15 @@ you can just use the ``environ`` instance::
 Supported Types
 ---------------
 
-- str
-- bool
-- int
-- float
-- json
-- list (FOO=a,b,c)
-- dict (BAR=key=val;foo=bar)
-- url
-- db_url
++ str
++ bool
++ int
++ float
++ json
++ list (FOO=a,b,c)
++ dict (BAR=key=val;foo=bar)
++ url
++ db_url
     -  PostgreSQL: postgres://, pgsql://, psql:// or postgresql://
     -  PostGIS: postgis://
     -  MySQL: mysql:// or mysql2://
@@ -181,7 +184,7 @@ Supported Types
     -  SQLITE: sqlite://
     -  SQLITE with SPATIALITE for GeoDjango: spatialite://
     -  LDAP: ldap://
-- cache_url
++ cache_url
     -  Database: dbcache://
     -  Dummy: dummycache://
     -  File: filecache://
@@ -189,12 +192,12 @@ Supported Types
     -  Memcached: memcache://
     -  Python memory: pymemcache://
     -  Redis: rediscache://
-- search_url
++ search_url
     -  ElasticSearch: elasticsearch://
     -  Solr: solr://
     -  Whoosh: whoosh://
     -  Simple cache: simple://
-- email_url
++ email_url
     -  SMTP: smtp://
     -  SMTPS: smtps://
     -  Console mail: consolemail://
