@@ -21,6 +21,14 @@ The original module (`django-environ`_) was a merge of:
 + `dj-config-url`_
 + `django-cache-url`_
 
+.. _django-environ: https://pypi.python.org/pypi/django-environ
+.. _envparse: https://github.com/rconradharris/envparse
+.. _honcho: https://github.com/nickstenning/honcho
+.. _dj-database-url: https://github.com/kennethreitz/dj-database-url
+.. _dj-search-url: https://github.com/dstufft/dj-search-url
+.. _dj-config-url: https://github.com/julianwachholz/dj-config-url
+.. _django-cache-url: https://github.com/ghickman/django-cache-url
+
 Basic usage
 -----------
 
@@ -120,9 +128,7 @@ How to use
 ----------
 
 There is an ``Environment`` class and a convenient instance of that class
-called ``environ``.
-
-::
+called ``environ``::
 
     >>> from musette import Environment
     >>> env = Environment(
@@ -214,49 +220,6 @@ Tests
     $ cd musette
     $ python setup.py test
 
-
-Credits
--------
-
-- `joke2k`_
-- `12factor`_
-- `12factor-django`_
-- `Two Scoops of Django`_
-- `rconradharris`_ / `envparse`_
-- `kennethreitz`_ / `dj-database-url`_
-- `migonzalvar`_ / `dj-email-url`_
-- `ghickman`_ / `django-cache-url`_
-- `dstufft`_ / `dj-search-url`_
-- `julianwachholz`_ / `dj-config-url`_
-- `nickstenning`_ / `honcho`_
-
-.. _joke2k: http://about.me/danielef
-.. _django-environ: https://pypi.python.org/pypi/django-environ
-
-.. _rconradharris: https://github.com/rconradharris
-.. _envparse: https://github.com/rconradharris/envparse
-
-.. _kennethreitz: https://github.com/kennethreitz
-.. _dj-database-url: https://github.com/kennethreitz/dj-database-url
-
-.. _migonzalvar: https://github.com/migonzalvar
-.. _dj-email-url: https://github.com/migonzalvar/dj-email-url
-
-.. _ghickman: https://github.com/ghickman
-.. _django-cache-url: https://github.com/ghickman/django-cache-url
-
-.. _julianwachholz: https://github.com/julianwachholz
-.. _dj-config-url: https://github.com/julianwachholz/dj-config-url
-
-.. _dstufft: https://github.com/dstufft
-.. _dj-search-url: https://github.com/dstufft/dj-search-url
-
-.. _nickstenning: https://github.com/nickstenning
-.. _honcho: https://github.com/nickstenning/honcho
-
-.. _12factor: http://www.12factor.net/
-.. _12factor-django: http://www.wellfireinteractive.com/blog/easier-12-factor-django/
-.. _Two Scoops of Django: https://django.2scoops.org
 
 
 
