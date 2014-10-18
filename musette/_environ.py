@@ -8,16 +8,10 @@ import re
 import json
 import warnings
 import glob
-
+import collections
 import logging
 
 logger = logging.getLogger(__file__)
-
-try:
-    from django.core.exceptions import ImproperlyConfigured
-except ImportError:
-    class ImproperlyConfigured(Exception):
-        pass
 
 try:
     import urllib.parse as urlparse
@@ -48,7 +42,7 @@ class NoValue(object):
         return '<{0}>'.format(self.__class__.__name__)
 
 
-class Environment(object):
+class Environment(collections.MutableMapping):
     """Provide schema-based lookups of environment variables so that each
     caller doesn't have to pass in `cast` and `default` parameters.
 
@@ -139,6 +133,24 @@ class Environment(object):
         :rtype: unicode
         """
         return self.get_value(var, cast=text_type, default=default)
+
+    def __getitem__(self, key):
+        return self.get_value(key)
+
+    def __setitem__(self, key, value):
+        self._environ[key] = value
+
+    def __delitem__(self, key):
+        del self._environ[key]
+
+    def __iter__(self):
+        return iter(self._environ)
+
+    def __len__(self):
+        return len(self._environ)
+
+    def get(self, key, default=NOTSET):
+        return self.get_value(key, default=default)
 
     def bool(self, var, default=NOTSET):
         """
@@ -252,8 +264,8 @@ class Environment(object):
             value = self._environ[var]
         except KeyError:
             if default is self.NOTSET:
-                error_msg = "Set the {0} environment variable".format(var)
-                raise ImproperlyConfigured(error_msg)
+                #error_msg = "Set the {0} environment variable".format(var)
+                raise
 
             value = default
 

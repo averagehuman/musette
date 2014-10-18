@@ -9,7 +9,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from musette._environ import Environment, environ, resolve, resolve_files
-from musette._environ import ImproperlyConfigured, text_type
+from musette._environ import text_type
 
 basename = os.path.basename
 dirname = os.path.dirname
@@ -78,7 +78,7 @@ class EnvTests(BaseTests):
         self.assertEqual(3, self.env('not_present', default=3))
 
     def test_not_present_without_default(self):
-        self.assertRaises(ImproperlyConfigured, self.env, 'not_present')
+        self.assertRaises(KeyError, self.env, 'not_present')
 
     def test_str(self):
         self.assertTypeAndValue(text_type, 'bar', self.env('STR_VAR'))
@@ -200,8 +200,6 @@ class EnvTests(BaseTests):
     def test_json_value(self):
         self.assertEqual(self.JSON, self.env.json('JSON_VAR'))
 
-
-
 class FileEnvTests(EnvTests):
 
     def setUp(self):
@@ -214,15 +212,66 @@ class FileEnvTests(EnvTests):
 
 class OsEnvironTests(unittest.TestCase):
 
+    def test_singleton_environ(self):
+        try:
+            os_environ = os.environ.data
+        except AttributeError:
+            os_environ = os.environ._data
+        env = Environment()
+        self.assertTrue(env._environ is os_environ)
+
+    def test_environ_mutation(self):
+        os.environ['MUSETTE_TEST_KEY'] = 'musette'
+        env = Environment()
+        self.assertEqual(env['MUSETTE_TEST_KEY'], 'musette')
+        env['MUSETTE_TEST_KEY'] = 'mutated'
+        self.assertEqual(env['MUSETTE_TEST_KEY'], 'mutated')
+        self.assertEqual(os.environ['MUSETTE_TEST_KEY'], 'mutated')
+        del env['MUSETTE_TEST_KEY']
+        with self.assertRaises(KeyError):
+            env['MUSETTE_TEST_KEY']
+        with self.assertRaises(KeyError):
+            os.environ['MUSETTE_TEST_KEY']
+
+class AltEnvironTests(unittest.TestCase):
+
     def setUp(self):
-        self.env = Environment()
+        self._environ = {}
+        self.env = Environment(self._environ)
 
     def test_singleton_environ(self):
         try:
             os_environ = os.environ.data
         except AttributeError:
             os_environ = os.environ._data
-        self.assertTrue(self.env._environ is os_environ)
+        self.assertFalse(self.env._environ is os_environ)
+
+class DictionaryInterfaceTests(BaseTests):
+
+    def setUp(self):
+        self.env = Environment(
+            self.generateData(),
+            INT_VAR=int,
+            NOT_PRESENT_VAR=(float, 33.3),
+            STR_VAR=text_type,
+            INT_LIST=[int],
+            DEFAULT_LIST=([int], [2])
+        )
+
+    def test_get(self):
+        self.assertTypeAndValue(int, 42, self.env['INT_VAR'])
+        self.assertTypeAndValue(int, 42, self.env.get('INT_VAR'))
+
+    def test_set_and_get(self):
+        self.env['INT_VAR'] = 24
+        self.assertTypeAndValue(int, 24, self.env['INT_VAR'])
+        self.assertTypeAndValue(int, 24, self.env.get('INT_VAR'))
+        self.env['INT_VAR'] = '99'
+        self.assertTypeAndValue(int, 99, self.env['INT_VAR'])
+        self.assertTypeAndValue(int, 99, self.env.get('INT_VAR'))
+
+    def test_length(self):
+        self.assertEquals(len(self.env), 27)
 
 class SchemaEnvTests(BaseTests):
 
@@ -635,7 +684,7 @@ def load_suite():
     cases = [
         EnvTests, FileEnvTests, OsEnvironTests, SchemaEnvTests,
         DatabaseTestSuite, CacheTestSuite, EmailTests, InterpolationTests,
-        PrettyPrintTests,
+        PrettyPrintTests, DictionaryInterfaceTests
     ]
     for case in cases:
         test_suite.addTest(unittest.makeSuite(case))

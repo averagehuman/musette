@@ -1,7 +1,7 @@
 """os.environ proxy based on django-environ"""
 
 __author__ = 'gmflanagan'
-__version__ = (0, 4, 2)
+__version__ = (0, 5, 0)
 
-from ._environ import environ, Environment, ImproperlyConfigured
+from ._environ import environ, Environment
 
