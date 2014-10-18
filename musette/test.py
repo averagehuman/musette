@@ -213,12 +213,8 @@ class FileEnvTests(EnvTests):
 class OsEnvironTests(unittest.TestCase):
 
     def test_singleton_environ(self):
-        try:
-            os_environ = os.environ.data
-        except AttributeError:
-            os_environ = os.environ._data
         env = Environment()
-        self.assertTrue(env._environ is os_environ)
+        self.assertTrue(env._environ is os.environ)
 
     def test_environ_mutation(self):
         os.environ['MUSETTE_TEST_KEY'] = 'musette'
@@ -271,7 +267,10 @@ class DictionaryInterfaceTests(BaseTests):
         self.assertTypeAndValue(int, 99, self.env.get('INT_VAR'))
 
     def test_length(self):
-        self.assertEquals(len(self.env), 27)
+        self.assertEqual(len(self.env), 27)
+
+    def test_keys_method(self):
+        self.assertEqual(set(self.env.keys()), set(self.generateData().keys()))
 
 class SchemaEnvTests(BaseTests):
 

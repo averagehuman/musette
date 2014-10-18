@@ -109,11 +109,7 @@ class Environment(collections.MutableMapping):
 
     def __init__(self, init=None, **schema):
         if init is None:
-            try:
-                init = os.environ.data
-            except AttributeError:
-                #python3
-                init = os.environ._data
+            init = os.environ
         self._environ = init
         self._schema = schema
 
