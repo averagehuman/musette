@@ -26,7 +26,9 @@ else:
     text_type = str
     basestring = str
 
-from .interpolation import resolve, resolve_files, StringTemplate
+from .interpolation import (
+    resolve, resolve_files, StringTemplate, is_variable, interpolated
+)
 
 __author__ = 'joke2k'
 
@@ -112,6 +114,7 @@ class Environment(collections.MutableMapping):
             init = os.environ
         self._environ = init
         self._schema = schema
+        self._resolved = None
 
     def __call__(self, var, cast=None, default=NOTSET):
         return self.get_value(var, cast=cast, default=default)
@@ -134,6 +137,9 @@ class Environment(collections.MutableMapping):
         return self.get_value(key)
 
     def __setitem__(self, key, value):
+        if self._resolved is not None and is_variable(val):
+            del self._resolved
+            self._resolved = None
         self._environ[key] = value
 
     def __delitem__(self, key):
@@ -220,6 +226,12 @@ class Environment(collections.MutableMapping):
         """
         return self.search_url_config(self.url(var, default=default), engine=engine)
 
+    def resolved(self):
+        if self._resolved is None:
+            self._resolved = self.__class__(
+                interpolated(self._environ), **self._schema
+            )
+        return self._resolved
 
     def get_value(self, var, cast=None, default=NOTSET):
         """Return value for given environment variable.
@@ -261,6 +273,11 @@ class Environment(collections.MutableMapping):
             value = default
         if value is not default:
             value = self.parse_value(value, cast)
+        if is_variable(value):
+            try:
+                return self.resolved()._environ[var]
+            except KeyError:
+                pass
         return value
 
     # Class and static methods
@@ -276,10 +293,6 @@ class Environment(collections.MutableMapping):
         if value is None:
             return value
         elif cast is None:
-            try:
-                value = StringTemplate(value).safe_substitute(**self._environ)
-            except TypeError:
-                pass
             return value
         elif cast is bool:
             try:

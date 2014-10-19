@@ -634,11 +634,49 @@ class InterpolationTests(unittest.TestCase):
 
 class MoreInterpolationTests(unittest.TestCase):
 
-    def test_set_and_get_variables(self):
+    def test_set_and_get_variable_values(self):
         ENVIRON = {}
         env = Environment(ENVIRON)
         env['PATH'] = '$CURRENT/path/to/file'
         self.assertEqual(env['PATH'], '$CURRENT/path/to/file')
+        env['CURRENT'] = '/home/user'
+        self.assertEqual(env['PATH'], '/home/user/path/to/file')
+
+    def test_set_and_get_nested_variable_values(self):
+        ENVIRON = {}
+        env = Environment(ENVIRON)
+        env['PATH'] = '$CURRENT/path/to/file/$NAME'
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['CURRENT'] = '${ROOT}/instance'
+        # unresolved
+        self.assertEqual(env['CURRENT'], '${ROOT}/instance')
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['ROOT'] = '/opt'
+        # still unresolved
+        self.assertEqual(env['CURRENT'], '${ROOT}/instance')
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['NAME'] = 'setup.py'
+        # resolved
+        self.assertEqual(env['CURRENT'], '/opt/instance')
+        self.assertEqual(env['PATH'], '/opt/instance/path/to/file/setup.py')
+
+    def test_set_and_get_nested_variable_values_again(self):
+        ENVIRON = {}
+        env = Environment(ENVIRON)
+        env['PATH'] = '$CURRENT/path/to/file/$NAME'
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['CURRENT'] = '${ROOT}/instance'
+        # unresolved
+        self.assertEqual(env['CURRENT'], '${ROOT}/instance')
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['NAME'] = 'setup.py'
+        # still unresolved
+        self.assertEqual(env['CURRENT'], '${ROOT}/instance')
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file/$NAME')
+        env['ROOT'] = '/opt'
+        # resolved
+        self.assertEqual(env['CURRENT'], '/opt/instance')
+        self.assertEqual(env['PATH'], '/opt/instance/path/to/file/setup.py')
 
 class PrettyPrintTests(BaseTests):
 

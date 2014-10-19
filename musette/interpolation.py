@@ -9,6 +9,12 @@ from .compat import ExitStack, basestring
 
 logger = logging.getLogger(__file__)
 
+def is_variable(value):
+    try:
+        return bool(StringTemplate.pattern.search(value))
+    except TypeError:
+        return False
+
 def iter_properties(iterable):
     """Split lines on '=' and ':=' ignoring blank lines and comments.
     """
