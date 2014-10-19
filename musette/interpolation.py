@@ -48,7 +48,7 @@ def resolve(iterables, defaults=None, overrides=None, iterator=None):
     Create a dictionary from an 'iterable of iterables' and interpolate the
     values within the result. Each iterable instance is expected to yield a
     key/value pair (ie. a 2-tuple of strings). Duplicate keys are allowed,
-    with later keys will overriding earlier.
+    but later keys will overrid earlier.
     """
     if not defaults:
         initial = {}

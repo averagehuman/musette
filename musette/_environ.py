@@ -26,7 +26,7 @@ else:
     text_type = str
     basestring = str
 
-from .interpolation import resolve, resolve_files
+from .interpolation import resolve, resolve_files, StringTemplate
 
 __author__ = 'joke2k'
 
@@ -113,8 +113,8 @@ class Environment(collections.MutableMapping):
         self._environ = init
         self._schema = schema
 
-    def __call__(self, var, cast=None, default=NOTSET, parse_default=False):
-        return self.get_value(var, cast=cast, default=default, parse_default=parse_default)
+    def __call__(self, var, cast=None, default=NOTSET):
+        return self.get_value(var, cast=cast, default=default)
 
     # Shortcuts
 
@@ -188,7 +188,7 @@ class Environment(collections.MutableMapping):
         """
         :rtype: urlparse.ParseResult
         """
-        return self.get_value(var, cast=urlparse.urlparse, default=default, parse_default=True)
+        return self.get_value(var, cast=urlparse.urlparse, default=default)
 
     def db_url(self, var=DEFAULT_DATABASE_ENV, default=NOTSET, engine=None):
         """Returns a config dictionary, defaulting to DATABASE_URL.
@@ -221,19 +221,16 @@ class Environment(collections.MutableMapping):
         return self.search_url_config(self.url(var, default=default), engine=engine)
 
 
-    def get_value(self, var, cast=None, default=NOTSET, parse_default=False):
+    def get_value(self, var, cast=None, default=NOTSET):
         """Return value for given environment variable.
 
         :param var: Name of variable.
         :param cast: Type to cast return value as.
         :param default: If var not present in environ, return this instead.
-        :param parse_default: force to parse default..
 
         :returns: Value from environment or default (if set)
         """
-
         logger.debug("get '{0}' casted as '{1}' with default '{2}'".format(var, cast, default))
-
         try:
             var_info = self._schema[var]
         except KeyError:
@@ -255,24 +252,15 @@ class Environment(collections.MutableMapping):
             else:
                 if not cast:
                     cast = var_info
-
         try:
             value = self._environ[var]
         except KeyError:
             if default is self.NOTSET:
                 #error_msg = "Set the {0} environment variable".format(var)
                 raise
-
             value = default
-
-        # Resolve any proxied values
-        if hasattr(value, 'startswith') and value.startswith('$'):
-            value = value.lstrip('$')
-            value = self.get_value(value, cast=cast, default=default)
-
-        if value != default or parse_default:
+        if value is not default:
             value = self.parse_value(value, cast)
-
         return value
 
     # Class and static methods
@@ -285,7 +273,13 @@ class Environment(collections.MutableMapping):
 
         :returns: Casted value
         """
-        if cast is None:
+        if value is None:
+            return value
+        elif cast is None:
+            try:
+                value = StringTemplate(value).safe_substitute(**self._environ)
+            except TypeError:
+                pass
             return value
         elif cast is bool:
             try:
@@ -303,7 +297,6 @@ class Environment(collections.MutableMapping):
                 [val.split('=') for val in value.split(';') if val]
             ))
         elif cast is dict:
-        #elif hasattr(cast, '__name__') and cast.__name__ == 'dict':
             value = dict([val.split('=') for val in value.split(',') if val])
         elif cast is list:
             value = [x for x in value.split(',') if x]

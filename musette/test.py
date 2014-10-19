@@ -620,7 +620,7 @@ class InterpolationTests(unittest.TestCase):
         self.assertEqual(d['fit'], 'cat DB_TEST TABLE_TEST')
         self.assertEqual(d['tif'], 'DB_TEST TABLE_TEST cat')
 
-    def test_read_classmethod(self):
+    def test_read_method(self):
         ENVIRON = {}
         env = Environment(ENVIRON)
         infiles = [filepath("common.properties"), filepath("env.properties")]
@@ -631,6 +631,14 @@ class InterpolationTests(unittest.TestCase):
         self.assertEqual(ENVIRON['baf'], 'TABLE_TEST DB_TEST')
         self.assertEqual(ENVIRON['fit'], 'cat DB_TEST TABLE_TEST')
         self.assertEqual(ENVIRON['tif'], 'DB_TEST TABLE_TEST cat')
+
+class MoreInterpolationTests(unittest.TestCase):
+
+    def test_set_and_get_variables(self):
+        ENVIRON = {}
+        env = Environment(ENVIRON)
+        env['PATH'] = '$CURRENT/path/to/file'
+        self.assertEqual(env['PATH'], '$CURRENT/path/to/file')
 
 class PrettyPrintTests(BaseTests):
 
@@ -683,7 +691,7 @@ def load_suite():
     cases = [
         EnvTests, FileEnvTests, OsEnvironTests, SchemaEnvTests,
         DatabaseTestSuite, CacheTestSuite, EmailTests, InterpolationTests,
-        PrettyPrintTests, DictionaryInterfaceTests
+        PrettyPrintTests, DictionaryInterfaceTests, MoreInterpolationTests
     ]
     for case in cases:
         test_suite.addTest(unittest.makeSuite(case))
