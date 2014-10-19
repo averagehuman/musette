@@ -40,11 +40,16 @@ def interpolated(d, context=None):
         context = dict(d)
     unresolved = {}
     for k,v in d.items():
-        newval = StringTemplate(v).substitute(context)
-        if StringTemplate.pattern.search(newval):
-            unresolved[k] = newval
-        else:
-            context[k] = newval
+        if v:
+            try:
+                v = StringTemplate(v).substitute(context)
+            except TypeError:
+                pass
+            else:
+                if StringTemplate.pattern.search(v):
+                    unresolved[k] = v
+                    continue
+        context[k] = v
     if unresolved:
         context.update(interpolated(unresolved, context))
     return context

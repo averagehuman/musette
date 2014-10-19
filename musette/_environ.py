@@ -140,7 +140,7 @@ class Environment(collections.MutableMapping):
         return self.get_value(key)
 
     def __setitem__(self, key, value):
-        if self._resolved is not None and is_variable(val):
+        if self._resolved is not None and is_variable(value):
             del self._resolved
             self._resolved = None
         self._environ[key] = value
@@ -159,6 +159,9 @@ class Environment(collections.MutableMapping):
 
     def copy(self):
         return self.__class__(self._environ.copy(), **self._schema)
+
+    def keys(self):
+        return self._environ.keys()
     ###########################################################################
 
     def bool(self, var, default=NOTSET):
@@ -280,7 +283,7 @@ class Environment(collections.MutableMapping):
             value = default
         if value is not default:
             value = self.parse_value(value, cast)
-        if is_variable(value):
+        if value and is_variable(value):
             try:
                 return self.resolved()._environ[var]
             except KeyError:
