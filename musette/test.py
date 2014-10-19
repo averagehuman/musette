@@ -678,6 +678,14 @@ class MoreInterpolationTests(unittest.TestCase):
         self.assertEqual(env['CURRENT'], '/opt/instance')
         self.assertEqual(env['PATH'], '/opt/instance/path/to/file/setup.py')
 
+    def test_variables_in_initial_dict(self):
+        env = Environment({'INSTALL_ROOT': '$PWD', 'PATH': '$INSTALL_ROOT/path'})
+        self.assertEqual(env['INSTALL_ROOT'], '$PWD')
+        self.assertEqual(env['PATH'], '$INSTALL_ROOT/path')
+        env['PWD'] = '/home/user'
+        self.assertEqual(env['INSTALL_ROOT'], '/home/user')
+        self.assertEqual(env['PATH'], '/home/user/path')
+
 class PrettyPrintTests(BaseTests):
 
     def test_pprint(self):
