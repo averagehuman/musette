@@ -154,7 +154,7 @@ class Environment(collections.MutableMapping):
     def __len__(self):
         return len(self._environ)
 
-    def get(self, key, default=NOTSET):
+    def get(self, key, default=None):
         return self.get_value(key, default=default)
 
     def copy(self):

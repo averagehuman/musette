@@ -266,6 +266,9 @@ class DictionaryInterfaceTests(BaseTests):
         self.assertTypeAndValue(int, 99, self.env['INT_VAR'])
         self.assertTypeAndValue(int, 99, self.env.get('INT_VAR'))
 
+    def test_get_returns_none_not_keyerror(self):
+        self.assertTrue(self.env.get('nonexistent') is None)
+
     def test_length(self):
         self.assertEqual(len(self.env), 27)
 
