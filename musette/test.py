@@ -272,6 +272,11 @@ class DictionaryInterfaceTests(BaseTests):
     def test_keys_method(self):
         self.assertEqual(set(self.env.keys()), set(self.generateData().keys()))
 
+    def test_copy(self):
+        copied = self.env.copy()
+        self.assertTrue(type(self.env) is type(copied))
+        self.assertEqual(len(self.env), len(copied))
+
 class SchemaEnvTests(BaseTests):
 
     def setUp(self):

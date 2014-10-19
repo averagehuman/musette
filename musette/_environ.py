@@ -133,6 +133,9 @@ class Environment(collections.MutableMapping):
         """
         return self.get_value(var, cast=text_type, default=default)
 
+    ###########################################################################
+    #    Dictionary Interface                                                 #
+    ###########################################################################
     def __getitem__(self, key):
         return self.get_value(key)
 
@@ -153,6 +156,10 @@ class Environment(collections.MutableMapping):
 
     def get(self, key, default=NOTSET):
         return self.get_value(key, default=default)
+
+    def copy(self):
+        return self.__class__(self._environ.copy(), **self._schema)
+    ###########################################################################
 
     def bool(self, var, default=NOTSET):
         """
