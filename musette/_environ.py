@@ -112,9 +112,9 @@ class Environment(collections.MutableMapping):
     def __init__(self, init=None, **schema):
         if init is None:
             init = os.environ
-        self._environ = init
-        self._schema = schema
-        self._resolved = None
+        self.__dict__['_environ'] = init
+        self.__dict__['_schema'] = schema
+        self.__dict__['_resolved'] = None
 
     def __call__(self, var, cast=None, default=NOTSET):
         return self.get_value(var, cast=cast, default=default)
@@ -163,6 +163,33 @@ class Environment(collections.MutableMapping):
     def keys(self):
         return self._environ.keys()
     ###########################################################################
+
+    __getattr__ = __getitem__
+
+    def __setattr__(self, key, val):
+        if key in self.__dict__ or key[:2] == '__':
+            self.__dict__[key] = val
+        else:
+            self.__setitem__(key, val)
+
+    def __getattr__(self, key):
+        if key[:2] == '__':
+            try:
+                return self.__dict__[key]
+            except KeyError:
+                pass
+        else:
+            try:
+                return self.__getitem__(key)
+            except KeyError:
+                pass
+        raise AttributeError(key)
+
+    def __delattr__(self, key):
+        try:
+            del self.__dict__[key]
+        except KeyError:
+            del self._environ[key]
 
     def bool(self, var, default=NOTSET):
         """

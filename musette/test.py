@@ -280,6 +280,18 @@ class DictionaryInterfaceTests(BaseTests):
         self.assertTrue(type(self.env) is type(copied))
         self.assertEqual(len(self.env), len(copied))
 
+    def test_get_attribute(self):
+        int_var_value = self.env['INT_VAR']
+        self.assertEqual(int_var_value, self.env('INT_VAR'))
+        self.assertEqual(int_var_value, self.env.INT_VAR)
+
+    def test_set_attribute(self):
+        self.env.MY_DEFAULT_SETTING = '1000'
+        self.assertEqual(self.env.MY_DEFAULT_SETTING, '1000')
+        self.assertEqual(self.env['MY_DEFAULT_SETTING'], '1000')
+        self.assertEqual(self.env('MY_DEFAULT_SETTING'), '1000')
+        self.assertEqual(self.env.int('MY_DEFAULT_SETTING'), 1000)
+
 class SchemaEnvTests(BaseTests):
 
     def setUp(self):
