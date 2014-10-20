@@ -292,6 +292,18 @@ class DictionaryInterfaceTests(BaseTests):
         self.assertEqual(self.env('MY_DEFAULT_SETTING'), '1000')
         self.assertEqual(self.env.int('MY_DEFAULT_SETTING'), 1000)
 
+    def test_setdefault(self):
+        self.assertTrue('INT_VAR' in self.env)
+        self.assertTrue('XYZ' not in self.env)
+        int_var_value = self.env['INT_VAR']
+        ret = self.env.setdefault('INT_VAR', int_var_value)
+        self.assertEqual(ret, int_var_value)
+        default = 'AAAAAA'
+        ret = self.env.setdefault('XYZ', default)
+        self.assertEqual(ret, default)
+        self.assertTrue('INT_VAR' in self.env)
+        self.assertTrue('XYZ' in self.env)
+
 class SchemaEnvTests(BaseTests):
 
     def setUp(self):
