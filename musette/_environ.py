@@ -173,12 +173,7 @@ class Environment(collections.MutableMapping):
             self.__setitem__(key, val)
 
     def __getattr__(self, key):
-        if key[:2] == '__':
-            try:
-                return self.__dict__[key]
-            except KeyError:
-                pass
-        else:
+        if key[:2] != '__':
             try:
                 return self.__getitem__(key)
             except KeyError:
