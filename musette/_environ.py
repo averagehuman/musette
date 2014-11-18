@@ -601,7 +601,7 @@ class Environment(collections.MutableMapping):
             files = [files]
         self._environ.update(resolve_files(files, defaults, overrides, iterator))
 
-    def pprint(self, stream=sys.stdout, maxlines=-1, safe=True, encoding='utf-8'):
+    def pprint(self, stream=sys.stdout, maxlines=-1, safe=False, encoding='utf-8'):
 
         def is_reserved(key):
             return bool(self.RESERVED_PATTERN.search(key.lower()))
@@ -616,7 +616,7 @@ class Environment(collections.MutableMapping):
             for key in group:
                 if line == 0:
                     break
-                if safe and is_reserved(key):
+                if not safe and is_reserved(key):
                     val = '*'*8
                 else:
                     val = env[key]
