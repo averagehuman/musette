@@ -601,10 +601,24 @@ class Environment(collections.MutableMapping):
             files = [files]
         self._environ.update(resolve_files(files, defaults, overrides, iterator))
 
-    def pprint(self, stream=sys.stdout, maxlines=-1, safe=False, encoding='utf-8'):
+    def pprint(
+        self, stream=sys.stdout, maxlines=-1, safe=False, encoding='utf-8',
+        uppercase=False, globs=None):
 
         def is_reserved(key):
             return bool(self.RESERVED_PATTERN.search(key.lower()))
+
+        def is_wanted(key):
+            if not key or key[0] == '_':
+                return False
+            if uppercase and key.upper() != key:
+                return False
+            if not globs:
+                return True
+            for glob in globs:
+                if fnmatch(key, glob):
+                    return True
+            return False
 
         from itertools import groupby
         env = self._environ
@@ -616,6 +630,8 @@ class Environment(collections.MutableMapping):
             for key in group:
                 if line == 0:
                     break
+                if not is_wanted(key):
+                    continue
                 if not safe and is_reserved(key):
                     val = '*'*8
                 else:
